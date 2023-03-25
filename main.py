@@ -6,16 +6,16 @@ from routers.chat import chat
 
 app = FastAPI()
 
-allowed_origins = [
-    "*",
-]
+allowed_origins = ["*",]
+allowed_headers = ["*",]
+allowed_methods = ["*",]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=allowed_origins,
+    allow_methods=allowed_methods,
+    allow_headers=allowed_headers
 )
 
 app.include_router(chat.router, tags=["Chat"])
