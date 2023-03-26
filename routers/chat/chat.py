@@ -88,7 +88,6 @@ async def add_exchange(file: UploadFile = File(...)):
     )
     openai_text = openai_response.choices[0].message.content
     audio_bytes_openai = convert_text_to_audio(openai_text)
-    #user_audio_url = save_audio_to_s3(bucket_name, mp3_file, "user")
     user_audio_url = save_audio_to_s3(bucket_name, audio_bytes, "user")
     openai_audio_url = save_audio_to_s3(bucket_name, audio_bytes_openai, "assistant")
 
