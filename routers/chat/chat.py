@@ -44,9 +44,9 @@ def convert_text_to_audio(text, output_format = "mp3", voice_id='Joanna'):
     audio_bytes = response['AudioStream'].read()
     return audio_bytes
 
-def save_audio_to_s3(bucket_name, audio_bytes, format="mp3"):
+def save_audio_to_s3(bucket_name, audio_bytes,user, format="mp3"):
     bucket = s3.Bucket(bucket_name)
-    key = datetime.now().strftime("%Y_%m_%d %H_%M_%S"+ "."+format)
+    key = datetime.now().strftime(f"%Y_%m_%d %H_%M_%S_{user}.{format}")
     bucket.put_object(Key=key, Body=audio_bytes)
     audio_path = f"https://{bucket_name}.s3.amazonaws.com/{key}"
     return audio_path
@@ -65,7 +65,7 @@ async def add_exchange(file: UploadFile = File(...)):
     mp3_file = BytesIO(mp3_buffer.getvalue())
 
     model = "whisper-1"
-    mp3_file.name = datetime.now().strftime("%Y_%m_%d %H_%M_%S"+ "."+output_format)
+    mp3_file.name = datetime.now().strftime(f"%Y_%m_%d %H_%M_%S_student.{output_format}")
     transcript = openai.Audio.transcribe(
         model=model,
         file=mp3_file,
@@ -87,8 +87,9 @@ async def add_exchange(file: UploadFile = File(...)):
         stop=[" Human:", " AI:"]
     )
     openai_text = openai_response.choices[0].message.content
-    audio_bytes = convert_text_to_audio(openai_text)
-    user_audio_url = save_audio_to_s3(bucket_name, mp3_file)
-    openai_audio_url = save_audio_to_s3(bucket_name, audio_bytes)
+    audio_bytes_openai = convert_text_to_audio(openai_text)
+    #user_audio_url = save_audio_to_s3(bucket_name, mp3_file, "user")
+    user_audio_url = save_audio_to_s3(bucket_name, audio_bytes, "user")
+    openai_audio_url = save_audio_to_s3(bucket_name, audio_bytes_openai, "assistant")
 
     return {"user": {"text": user_text, "audio": user_audio_url }, "assistant": {"text" :openai_text, "audio": openai_audio_url}}
