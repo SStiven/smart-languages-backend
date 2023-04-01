@@ -12,7 +12,7 @@ messages = []
 
 def build_system_message():
     instructions = [
-        "Your role will be an English teacher.",
+        "Your role will be an English teacher, almost all the time you speak english but sometimes if you think is better to speak Spanish do it, but don't do it too often.",
         "I will provide you with text that was obtained using speech-to-text technology.",
         "Your task is to correct every grammar mistake, but keep in mind that the text is from spoken English, so be concise and natural in your corrections.",
         "Please focus on correcting the verb tense, and ignore any capitalization errors.",
@@ -38,7 +38,6 @@ access_key_id = 'AKIA6KFYBI3X6RIV22WV'
 polly = boto3.client('polly', aws_access_key_id=access_key_id, aws_secret_access_key=secret_access_key, region_name="us-east-1")
 s3 = boto3.resource("s3", aws_access_key_id=access_key_id, aws_secret_access_key=secret_access_key)
 bucket_name = "smart-languages"
-
 def convert_text_to_audio(text, output_format = "mp3", voice_id='Joanna'):
     response = polly.synthesize_speech(VoiceId=voice_id, Text=text, OutputFormat=output_format)
     audio_bytes = response['AudioStream'].read()
