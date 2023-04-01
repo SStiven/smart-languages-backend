@@ -5,9 +5,14 @@ from io import BytesIO
 import boto3
 import openai
 
-router = APIRouter()
-openai.api_key = "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"
+import os
 
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
+access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
+
+router = APIRouter()
 messages = []
 
 def build_system_message():
@@ -33,8 +38,6 @@ system_message = build_system_message()
 add_text_to_messages(system_message , "system")
 
 
-secret_access_key = 'qpthZJhz8cc+rqwI+lAJOgIbjPuAJatIfLuaunS7'
-access_key_id = 'AKIA6KFYBI3X6RIV22WV'
 polly = boto3.client('polly', aws_access_key_id=access_key_id, aws_secret_access_key=secret_access_key, region_name="us-east-1")
 s3 = boto3.resource("s3", aws_access_key_id=access_key_id, aws_secret_access_key=secret_access_key)
 bucket_name = "smart-languages"
